@@ -7,7 +7,7 @@
 
             <div class="d-flex align-items-center gap-3">
                 <!-- Tombol Create -->
-                <a href="{{ route('admin.products.create') }}" class="btn btn-primary px-3">
+                <a href="{{ route('admin.stocks.create') }}" class="btn btn-primary px-3">
                     <i class="fas fa-plus me-2"></i> Create
                 </a>
             </div>
@@ -19,48 +19,48 @@
             <div class="col-12">
                 <div class="card shadow">
                     <div class="card-body">
-                        <!-- table -->
                         <table class="table datatables align-middle" id="dataTable-1">
                             <thead class="thead-light">
                                 <tr>
                                     <th></th>
                                     <th>#</th>
-                                    <th>SKU</th>
-                                    <th>Name</th>
-                                    <th>Price</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
                                     <th>Created At</th>
+                                    <th>Updated At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($products as $product)
+                                @foreach ($stocks as $stock)
                                     <tr>
                                         <td>
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input"
-                                                    id="check{{ $product->id }}">
-                                                <label class="custom-control-label" for="check{{ $product->id }}"></label>
+                                                    id="check{{ $stock->id }}">
+                                                <label class="custom-control-label" for="check{{ $stock->id }}"></label>
                                             </div>
                                         </td>
-                                        <td>{{ $product->id }}</td>
-                                        <td>{{ $product->sku }}</td>
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ number_format($product->price, 2) }}</td>
-                                        <td>{{ $product->created_at->format('d M, Y') }}</td>
+                                        <td>{{ $stock->id }}</td>
+                                        <td>{{ $stock->product->name ?? '-' }}</td>
+                                        <td>{{ $stock->quantity }}</td>
+                                        <td>{{ optional($stock->created_at)->format('d M, Y') ?? '-' }}</td>
+                                        <td>{{ optional($stock->updated_at)->format('d M, Y') ?? '-' }}</td>
+
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <!-- Detail -->
-                                                <a href="{{ route('admin.products.show', $product->id) }}"
+                                                <a href="{{ route('admin.stocks.show', $stock->id) }}"
                                                     class="btn btn-info btn-sm me-1" title="Detail">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <!-- Edit -->
-                                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                                <a href="{{ route('admin.stocks.edit', $stock->id) }}"
                                                     class="btn btn-warning btn-sm me-1" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <!-- Delete -->
-                                                <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                                <form action="{{ route('admin.stocks.destroy', $stock->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
@@ -70,7 +70,7 @@
                                                     </button>
                                                 </form>
                                                 <!-- Print -->
-                                                <a href="{{ route('products.print', $product->id) }}" target="_blank"
+                                                <a href="{{ route('admin.stocks.print') }}" target="_blank"
                                                     class="btn btn-secondary btn-sm" title="Print">
                                                     <i class="fas fa-print"></i>
                                                 </a>

@@ -3,16 +3,13 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ModulesController;
-use App\Http\Controllers\ModuleSettingsController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\BlogCategoryController;
-use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\Admin\ContactSettingController;
-use App\Http\Controllers\ContactMessagesController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductCategoriesController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PurchaseController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,42 +61,41 @@ Route::prefix('admin')
         Route::get('roles-export-pdf', [RolesController::class, 'exportPDF'])->name('roles.export-pdf');
         Route::get('roles-print', [RolesController::class, 'print'])->name('roles.print');
 
-        // MODULES MANAGEMENT
-        Route::resource('modules', ModulesController::class);
-        Route::get('modules-export-pdf', [ModulesController::class, 'exportPDF'])->name('modules.export-pdf');
-        Route::get('modules-print', [ModulesController::class, 'print'])->name('modules.print');
+       // PRODUCTS MANAGEMENT
+       Route::resource('products', ProductController::class);
 
-        // MODULE SETTINGS MANAGEMENT
-        Route::resource('module-settings', ModuleSettingsController::class)->names('module-settings');
-        Route::get('module-settings-export-pdf', [ModuleSettingsController::class, 'exportPDF'])->name('module-settings.export-pdf');
-        Route::get('module-settings-print', [ModuleSettingsController::class, 'print'])->name('module-settings.print');
+       // Optional: export / print
+       Route::get('products-export-pdf', [ProductController::class, 'exportPDF'])->name('products.export-pdf');
+       Route::get('products-print', [ProductController::class, 'print'])->name('products.print');
 
-        // BLOG CATEGORIES
-        Route::resource('blog-categories', BlogCategoryController::class);
-        Route::patch('blog-categories/{blogCategory}/toggle-status', [BlogCategoryController::class, 'toggleStatus'])
-            ->name('blog-categories.toggle-status');
+       // PRODUCTS MANAGEMENT
+       Route::resource('stocks', StockController::class);
 
-        // BLOG POSTS
-        Route::resource('blog-posts', BlogPostController::class);
-        Route::get('blog-posts-export-pdf', [BlogPostController::class, 'exportPDF'])->name('blog-posts.export-pdf');
+       // Optional: export / print
+       Route::resource('stocks', StockController::class);
 
-        // PRODUCTS
-        Route::resource('products', ProductController::class);
+        // Tambahkan route untuk print
+        Route::get('stocks-print', [StockController::class, 'print'])->name('stocks.print');
 
-        // PRODUCT CATEGORIES
-        Route::resource('product-categories', ProductCategoriesController::class);
-        Route::get('product-categories-export-pdf', [ProductCategoriesController::class, 'exportPDF'])->name('product-categories.export-pdf');
-        Route::get('product-categories-print', [ProductCategoriesController::class, 'print'])->name('product-categories.print');
+        // Tambahkan route untuk export PDF jika ada
+        Route::get('stocks-pdf', [StockController::class, 'exportPDF'])->name('stocks.pdf');
 
-        Route::resource('contact-messages', ContactMessagesController::class)
-        ->only(['index','show', 'destroy','edit','update']);
-        
-        Route::put('contact-messages/{message}/updateStatus', [ContactMessagesController::class, 'update'])
-    ->name('admin.contact-messages.updateStatus');
+          // PURCHASES MANAGEMENT
+          Route::resource('purchases', PurchaseController::class);
+          Route::get('purchases-print', [PurchaseController::class, 'print'])->name('purchases.print');
+          Route::get('purchases-pdf', [PurchaseController::class, 'exportPDF'])->name('purchases.pdf');
+
+       
      Route::resource('contact-settings', ContactSettingController::class);
+      // Chatbot Admin
+      // Halaman chat admin
+      Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
 
+      // Route untuk mengirim pesan chat (POST)
+      Route::post('chat/send', [ChatController::class, 'send'])->name('chat.send');
     });
 
+    
 // ==============================
 // Routes User Biasa
 // ==============================

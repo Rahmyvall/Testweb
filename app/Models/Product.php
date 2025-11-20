@@ -9,57 +9,41 @@ class Product extends Model
 {
     use HasFactory;
 
-    // Jika nama tabel tidak sesuai konvensi Laravel, bisa ditentukan secara manual
-    // protected $table = 'products';
+    // Tabel yang digunakan
+    protected $table = 'products';
 
-    // Mass assignable fields
+    // Kolom yang bisa diisi massal
     protected $fillable = [
+        'sku',
         'name',
-        'slug',
-        'description',
-        'short_description',
         'price',
-        'stock',
-        'status',
-        'category_id',
     ];
 
-    /**
-     * Relasi ke kategori
-     */
+    // Casting kolom price ke decimal
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
 
-      // Relasi ke product images
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class);
-    }
-
-    // Relasi gambar utama
-    public function primaryImage()
-    {
-        return $this->hasOne(ProductImage::class)->where('is_primary', true);
-    }
-    
-    public function category()
-    {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
-    }
-
-    // app/Models/Product.php
+    // Jika tabel tidak memiliki created_at & updated_at
+    // public $timestamps = false;
 
     /**
-     * Scope untuk produk aktif
+     * Relasi ke kategori produk
      */
-    public function scopeActive($query)
+
+    /**
+     * Relasi ke stok produk
+     */
+    public function stock()
     {
-        return $query->where('status', 'active');
+        return $this->hasOne(Stock::class, 'product_id');
     }
 
     /**
-     * Scope untuk produk dengan stock tersedia
+     * Ambil total stok jika stok lebih dari 0
      */
-    public function scopeInStock($query)
+    public function availableStock()
     {
-        return $query->where('stock', '>', 0);
+        return $this->stock ? $this->stock->quantity : 0;
     }
 }

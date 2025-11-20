@@ -7,7 +7,7 @@
 
             <div class="d-flex align-items-center gap-3">
                 <!-- Tombol Create -->
-                <a href="{{ route('admin.products.create') }}" class="btn btn-primary px-3">
+                <a href="{{ route('admin.purchases.create') }}" class="btn btn-primary px-3">
                     <i class="fas fa-plus me-2"></i> Create
                 </a>
             </div>
@@ -19,48 +19,59 @@
             <div class="col-12">
                 <div class="card shadow">
                     <div class="card-body">
-                        <!-- table -->
                         <table class="table datatables align-middle" id="dataTable-1">
                             <thead class="thead-light">
                                 <tr>
                                     <th></th>
                                     <th>#</th>
-                                    <th>SKU</th>
-                                    <th>Name</th>
-                                    <th>Price</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
+                                    <th>Buyer Name</th>
+                                    <th>Status</th>
                                     <th>Created At</th>
+                                    <th>Cancelled At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($products as $product)
+                                @foreach ($purchases as $purchase)
                                     <tr>
                                         <td>
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input"
-                                                    id="check{{ $product->id }}">
-                                                <label class="custom-control-label" for="check{{ $product->id }}"></label>
+                                                    id="check{{ $purchase->id }}">
+                                                <label class="custom-control-label" for="check{{ $purchase->id }}"></label>
                                             </div>
                                         </td>
-                                        <td>{{ $product->id }}</td>
-                                        <td>{{ $product->sku }}</td>
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ number_format($product->price, 2) }}</td>
-                                        <td>{{ $product->created_at->format('d M, Y') }}</td>
+                                        <td>{{ $purchase->id }}</td>
+                                        <td>{{ $purchase->product->name ?? '-' }}</td>
+                                        <td>{{ $purchase->qty }}</td>
+                                        <td>{{ number_format($purchase->total_price, 2) }}</td>
+                                        <td>{{ $purchase->buyer_name }}</td>
+                                        <td>
+                                            <span
+                                                class="badge {{ $purchase->status == 'active' ? 'bg-success' : 'bg-danger' }}">
+                                                {{ ucfirst($purchase->status) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ optional($purchase->created_at)->format('d M, Y') ?? '-' }}</td>
+                                        <td>{{ optional($purchase->cancelled_at)->format('d M, Y') ?? '-' }}</td>
+
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <!-- Detail -->
-                                                <a href="{{ route('admin.products.show', $product->id) }}"
+                                                <a href="{{ route('admin.purchases.show', $purchase->id) }}"
                                                     class="btn btn-info btn-sm me-1" title="Detail">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <!-- Edit -->
-                                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                                <a href="{{ route('admin.purchases.edit', $purchase->id) }}"
                                                     class="btn btn-warning btn-sm me-1" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <!-- Delete -->
-                                                <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                                <form action="{{ route('admin.purchases.destroy', $purchase->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
@@ -70,7 +81,7 @@
                                                     </button>
                                                 </form>
                                                 <!-- Print -->
-                                                <a href="{{ route('products.print', $product->id) }}" target="_blank"
+                                                <a href="{{ route('admin.purchases.print') }}" target="_blank"
                                                     class="btn btn-secondary btn-sm" title="Print">
                                                     <i class="fas fa-print"></i>
                                                 </a>

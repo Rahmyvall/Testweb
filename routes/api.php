@@ -3,12 +3,9 @@
 use App\Http\Controllers\Api\BlogPostApiController;
 use App\Http\Controllers\Api\UserApiController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\ModuleApiController;
-use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\StockApiController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductCategoryApiController;
-use App\Http\Controllers\ProductImageController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,34 +33,19 @@ Route::prefix('users')->group(function () {
     Route::get('/export/pdf', [UserApiController::class, 'exportPDF']);
 });
 
-Route::prefix('modules')->group(function () {
-    Route::get('/', [ModuleApiController::class, 'index']);      // GET all
-    Route::post('/', [ModuleApiController::class, 'store']);     // POST create
-    Route::get('/{id}', [ModuleApiController::class, 'show']);   // GET detail
-    Route::put('/{id}', [ModuleApiController::class, 'update']); // PUT update
-    Route::delete('/{id}', [ModuleApiController::class, 'destroy']); // DELETE
-});
-
-Route::prefix('v1')->group(function () {
-    Route::get('blog-posts', [BlogPostApiController::class, 'index']);
-    Route::get('blog-posts/{id}', [BlogPostApiController::class, 'show']);
-    Route::post('blog-posts', [BlogPostApiController::class, 'store']);
-    Route::put('blog-posts/{id}', [BlogPostApiController::class, 'update']);
-    Route::delete('blog-posts/{id}', [BlogPostApiController::class, 'destroy']);
-});
-
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);          // List products
-    Route::get('{id}', [ProductController::class, 'show']);       // Detail product
-    Route::post('/', [ProductController::class, 'store']);        // Create product
-    Route::put('{id}', [ProductController::class, 'update']);    // Update product
-    Route::delete('{id}', [ProductController::class, 'destroy']); // Delete product
+    Route::get('/', [ProductApiController::class, 'index']);        // List all products
+    Route::get('/{id}', [ProductApiController::class, 'show']);    // Detail product
+    Route::post('/', [ProductApiController::class, 'store']);      // Create new product
+    Route::put('/{id}', [ProductApiController::class, 'update']);  // Update product
+    Route::delete('/{id}', [ProductApiController::class, 'destroy']); // Delete product
 });
 
-Route::prefix('product-categories')->group(function () {
-    Route::get('/', [ProductCategoryApiController::class, 'index']);       // List semua kategori
-    Route::get('{id}', [ProductCategoryApiController::class, 'show']);    // Detail kategori
-    Route::post('/', [ProductCategoryApiController::class, 'store']);     // Buat kategori baru
-    Route::put('{id}', [ProductCategoryApiController::class, 'update']);  // Update kategori
-    Route::delete('{id}', [ProductCategoryApiController::class, 'destroy']); // Hapus kategori
+// Stock routes
+Route::prefix('stocks')->group(function () {
+    Route::get('/', [StockApiController::class, 'index']);        // List all stocks
+    Route::get('/{id}', [StockApiController::class, 'show']);    // Detail stock
+    Route::post('/', [StockApiController::class, 'store']);      // Create new stock
+    Route::put('/{id}', [StockApiController::class, 'update']);  // Update stock
+    Route::delete('/{id}', [StockApiController::class, 'destroy']); // Delete stock
 });

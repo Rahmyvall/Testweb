@@ -1,131 +1,126 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="fw-bold">Selamat Datang di Dashboard Admin 👋</h3>
-            <p class="mb-0">Halo, <strong>{{ auth()->user()->name }}</strong>!</p>
-            <p class="mb-0">Anda login sebagai <strong>{{ auth()->user()->roles->name ?? 'Role belum ditentukan' }}</strong>.</p>
-        </div>
-        <div>
-            <span class="badge bg-primary fs-6">Admin Panel</span>
-        </div>
-    </div>
+    <div class="container-fluid">
+        <h1 class="mb-4">{{ $title }}</h1>
 
-    {{-- Statistik Kartu --}}
-    <div class="row g-3 mb-4">
-        <!-- Total Messages -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm text-white bg-primary">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3 text-center">
-                        <i class="fe fe-mail fe-32"></i>
+        <!-- ======================
+             WIDGETS SUMMARY
+             ====================== -->
+        <div class="row mb-4">
+            <!-- Total Purchases -->
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted">Total Purchases</small>
+                        <h3>{{ $totalPurchases }}</h3>
+                        <p class="small text-muted">
+                            <i class="fe fe-arrow-{{ $purchaseGrowth >= 0 ? 'up text-success' : 'down text-danger' }}"></i>
+                            {{ abs($purchaseGrowth) }}% last week
+                        </p>
                     </div>
-                    <div>
-                        <p class="small mb-1">Total Messages</p>
-                        <h4 class="mb-0">{{ $totalMessages }} <span class="small text-success">+{{ $newMessagesPercent }}%</span></h4>
+                </div>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted">Total Revenue</small>
+                        <h3>${{ number_format($totalRevenue, 2) }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Purchases -->
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted">Pending Purchases</small>
+                        <h3>{{ $purchasesPending }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Purchases -->
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted">Shipped Purchases</small>
+                        <h3>{{ $purchasesActive }}</h3>
                     </div>
                 </div>
             </div>
         </div>
-    
-        <!-- Unread Messages -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3 text-center bg-warning rounded-circle p-2">
-                        <i class="fe fe-eye-off fe-24 text-white"></i>
-                    </div>
-                    <div>
-                        <p class="small mb-1 text-muted">Unread Messages</p>
-                        <h4 class="mb-0">{{ $unreadMessages }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Replied Messages -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3 text-center bg-success rounded-circle p-2">
-                        <i class="fe fe-check-circle fe-24 text-white"></i>
-                    </div>
-                    <div>
-                        <p class="small mb-1 text-muted">Replied Messages</p>
-                        <h4 class="mb-0">{{ $repliedMessages }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Archived Messages -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="me-3 text-center bg-secondary rounded-circle p-2">
-                        <i class="fe fe-archive fe-24 text-white"></i>
-                    </div>
-                    <div>
-                        <p class="small mb-1 text-muted">Archived Messages</p>
-                        <h4 class="mb-0">{{ $archivedMessages }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- Recent Orders Table --}}
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-3">Last Orders</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
+
+        <!-- ======================
+             LAST 5 PURCHASES TABLE
+             ====================== -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="mb-3">Last 5 Purchases</h6>
+                        <table class="table table-striped table-hover">
+                            <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
+                                    <th>Purchase Date</th>
+                                    <th>Buyer Name</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
                                     <th>Status</th>
+                                    <th>Note</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($products as $product)
-                                <tr>
-                                    <td>{{ $product->id }}</td>
-                                    <td>{{ $product->name }}</td>
-                                    <td>{{ $product->category?->name ?? '-' }}</td>
-                                    <td>{{ $product->stock }}</td>
-                                    <td>${{ number_format($product->price, 2) }}</td>
-                                    <td>
-                                        @if($product->status == 'active')
-                                            <span class="badge bg-success">Active</span>
-                                        @elseif($product->status == 'inactive')
-                                            <span class="badge bg-secondary">Inactive</span>
-                                        @else
-                                            <span class="badge bg-warning">Out of Stock</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('products.print', $product->id) }}" target="_blank" class="btn btn-sm btn-primary">
-                                            <i class="bi bi-printer"></i> Print
-                                        </a>
-                                    </td>
-                                </tr>
-                                
+                                @foreach ($recentPurchases as $purchase)
+                                    <tr>
+                                        <td>{{ $purchase->id }}</td>
+                                        <td>{{ optional($purchase->created_at)->format('Y-m-d H:i:s') }}</td>
+                                        <td>{{ $purchase->buyer_name ?? '-' }}</td>
+                                        <td>{{ $purchase->product->name ?? '-' }}</td>
+                                        <td>{{ $purchase->qty }}</td>
+                                        <td>${{ number_format($purchase->total_price, 2) }}</td>
+                                        <td>
+                                            <span
+                                                class="badge {{ $purchase->status == 'active' ? 'bg-success' : ($purchase->status == 'cancelled' ? 'bg-danger' : 'bg-warning') }}">
+                                                {{ ucfirst($purchase->status) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $purchase->note ?? '-' }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown">
+                                                    Action
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item"
+                                                            href="{{ route('admin.purchases.edit', $purchase->id) }}">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <form
+                                                            action="{{ route('admin.purchases.destroy', $purchase->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="dropdown-item"
+                                                                onclick="return confirm('Are you sure?')">Remove</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
-                        </table>                        
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
-
