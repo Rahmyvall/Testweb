@@ -7,13 +7,3 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Fontend & Backend
-
-<a><img src="{{ asset('public/ssfoto/1.jpg') }}" alt="public"></a>
-<a><img src="{{ asset('public/ssfoto/2.jpg') }}" alt="public"></a>
-<a><img src="{{ asset('public/ssfoto/3.jpg') }}" alt="public"></a>
-<a><img src="{{ asset('public/ssfoto/4.jpg') }}" alt="public"></a>
-<a><img src="{{ asset('public/ssfoto/5.jpg') }}" alt="public"></a>
-<a><img src="{{ asset('public/ssfoto/6.jpg') }}" alt="public"></a>
-
-</p>
